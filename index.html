@@ -1,11 +1,326 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>wachter.sh</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wachter.sh</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #0a0a0f;
+            color: #e0e0e8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.light-theme {
+            background-color: #f4f4f8;
+            color: #1a1a2e;
+        }
+
+        body.light-theme .logo {
+            color: #1a1a2e;
+        }
+
+        body.light-theme .tagline {
+            color: #3a3a50;
+        }
+
+        body.light-theme .bio {
+            color: #6a6a80;
+        }
+
+        body.light-theme .social-links a {
+            color: #1a1a2e;
+        }
+
+        body.light-theme .social-links a:hover {
+            color: #00997f;
+        }
+
+        body.light-theme .theme-toggle {
+            color: #1a1a2e;
+            border-color: #c8c8d6;
+        }
+
+        body.light-theme .theme-toggle:hover {
+            background-color: #eaeaf0;
+            color: #00997f;
+        }
+
+        body.light-theme .social-links a:hover {
+            filter: drop-shadow(0 0 6px #00997f);
+        }
+
+        .container {
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .avatar-wrapper {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            border: 3px solid #00ffd5;
+            overflow: hidden;
+            transition: border-color 0.3s, filter 0.3s;
+        }
+
+        .avatar-wrapper:hover {
+            filter: drop-shadow(0 0 12px #00ffd5);
+        }
+
+        body.light-theme .avatar-wrapper {
+            border-color: #00997f;
+        }
+
+        body.light-theme .avatar-wrapper:hover {
+            filter: drop-shadow(0 0 10px #00997f);
+        }
+
+        .avatar {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .logo {
+            font-size: 10px;
+            line-height: 1.2;
+            white-space: pre;
+            overflow-x: auto;
+            margin-bottom: 1rem;
+            color: #00ffd5;
+        }
+
+        .name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+            color: #e0e0e8;
+        }
+
+        body.light-theme .name {
+            color: #1a1a2e;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #a0a0b0;
+            font-style: italic;
+        }
+
+        .bio {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            color: #6a6a80;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .social-links a {
+            color: #e0e0e8;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s, filter 0.3s;
+        }
+
+        .social-links a:hover {
+            color: #00ffd5;
+            filter: drop-shadow(0 0 8px #00ffd5);
+        }
+
+        body.light-theme .social-links a:hover {
+            filter: drop-shadow(0 0 6px #00997f);
+        }
+
+        .social-links svg {
+            width: 40px;
+            height: 40px;
+            fill: currentColor;
+        }
+
+        .social-links span {
+            font-size: 0.9rem;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: 1px solid #1e1e30;
+            color: #e0e0e8;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(0, 255, 213, 0.1);
+            color: #00ffd5;
+            border-color: #00ffd5;
+            transform: rotate(180deg);
+        }
+
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 6px;
+            }
+
+            .tagline {
+                font-size: 1rem;
+            }
+
+            .bio {
+                font-size: 0.9rem;
+            }
+
+            .social-links {
+                gap: 1.5rem;
+            }
+
+            .social-links svg {
+                width: 32px;
+                height: 32px;
+            }
+
+            .theme-toggle {
+                width: 32px;
+                height: 32px;
+                top: 10px;
+                right: 10px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>wachter.sh</h1>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <span id="themeIcon">☀️</span>
+    </button>
+    <div class="container">
+        <div class="logo">██╗    ██╗ █████╗  ██████╗██╗  ██╗████████╗███████╗██████╗    ███████╗██╗  ██╗
+██║    ██║██╔══██╗██╔════╝██║  ██║╚══██╔══╝██╔════╝██╔══██╗   ██╔════╝██║  ██║
+██║ █╗ ██║███████║██║     ███████║   ██║   █████╗  ██████╔╝   ███████╗███████║
+██║███╗██║██╔══██║██║     ██╔══██║   ██║   ██╔══╝  ██╔══██╗   ╚════██║██╔══██║
+╚███╔███╔╝██║  ██║╚██████╗██║  ██║   ██║   ███████╗██║  ██║██╗███████║██║  ██║
+ ╚══╝╚══╝ ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝╚══════╝╚═╝  ╚═╝</div>
+
+        <div class="avatar-wrapper">
+            <img src="animated.gif" alt="Julian Wachter" class="avatar">
+        </div>
+
+        <h1 class="name">Julian Wachter</h1>
+
+        <p class="tagline">"Keep it simple, stay focused, master the craft, deliver excellence"</p>
+
+        <p class="bio">
+            Tech enthusiast with a passion for DevOps, Kubernetes and all things infrastructure. 
+            When not cooking up scalable solutions, you'll find me experimenting in the kitchen. If it runs in a container or simmers in a pot, I'm into it. 
+            A true Swiss Army knife in the tech world— versatile, reliable, and always ready to tackle any challenge. 
+            Generalist at heart, specialist when needed.
+        </p>
+
+        <div class="social-links">
+            <a href="https://freiburg.social/@bree" target="_blank" rel="noopener noreferrer">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z"/>
+                </svg>
+                <span>Mastodon</span>
+            </a>
+
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                </svg>
+                <span>LinkedIn</span>
+            </a>
+
+            <a href="https://github.com/Breee" target="_blank" rel="noopener noreferrer">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+                </svg>
+                <span>GitHub</span>
+            </a>
+
+            <a href="https://gitlab.com/BreeGit" target="_blank" rel="noopener noreferrer">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0062l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"/>
+                </svg>
+                <span>GitLab</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Check for saved theme preference or default to system preference
+        const getPreferredTheme = () => {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                return savedTheme;
+            }
+            return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        };
+
+        const setTheme = (theme) => {
+            if (theme === 'light') {
+                document.body.classList.add('light-theme');
+                document.getElementById('themeIcon').textContent = '🌙';
+            } else {
+                document.body.classList.remove('light-theme');
+                document.getElementById('themeIcon').textContent = '☀️';
+            }
+            localStorage.setItem('theme', theme);
+        };
+
+        // Set initial theme
+        setTheme(getPreferredTheme());
+
+        // Toggle theme on button click
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            const currentTheme = document.body.classList.contains('light-theme') ? 'light' : 'dark';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+        });
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
+            if (!localStorage.getItem('theme')) {
+                setTheme(e.matches ? 'light' : 'dark');
+            }
+        });
+    </script>
 </body>
 </html>
